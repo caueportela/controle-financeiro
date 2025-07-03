@@ -3,14 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login-container button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-<h2>Login</h2>
-<form id="loginForm">
-  <input type="text" id="email" placeholder="Email" required />
-  <input type="password" id="senha" placeholder="Senha" required />
-  <button type="submit">Entrar</button>
-</form>
+<div class="login-container">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="text" id="email" placeholder="Email" required />
+    <input type="password" id="senha" placeholder="Senha" required />
+    <button type="submit">Entrar</button>
+  </form>
+</div>
 
 <script>
   document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -18,7 +67,7 @@
     const email = document.getElementById("email").value;
     const senha = document.getElementById("senha").value;
 
-    const res = await fetch("login", {  // caminho relativo
+    const res = await fetch("/controle-financeiro/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -34,7 +83,6 @@
     const data = await res.json();
 
     if (data.sucesso) {
-      // login bem-sucedido, redirecionar para a página principal
       window.location.href = "index.html";
     } else {
       alert("Email ou senha inválidos.");

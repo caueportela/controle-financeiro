@@ -5,8 +5,8 @@ import edu.projetointegrador.controlefinanceiro.dao.TransacaoDAO;
 import edu.projetointegrador.controlefinanceiro.connector.PostgresConnector;
 import edu.projetointegrador.controlefinanceiro.model.Transacao;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +34,7 @@ public class TransacaoServlet extends HttpServlet {
             return;
         }
 
-        int usuarioId = (int) session.getAttribute("usuarioId");
+        long usuarioId = ((Number) session.getAttribute("usuarioId")).longValue();
 
         try (BufferedReader reader = req.getReader()) {
             Transacao transacao = gson.fromJson(reader, Transacao.class);
@@ -61,7 +61,7 @@ public class TransacaoServlet extends HttpServlet {
             return;
         }
 
-        long usuarioId = (long) session.getAttribute("usuarioId");
+        long usuarioId = ((Number) session.getAttribute("usuarioId")).longValue();
 
         try {
             List<Transacao> transacoes = transacaoDAO.listarPorUsuario(usuarioId);

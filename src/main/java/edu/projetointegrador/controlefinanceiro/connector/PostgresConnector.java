@@ -5,16 +5,24 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
 public class PostgresConnector {
     private Connection conn = null;
     private static PostgresConnector instance = null;
 
     private PostgresConnector() throws SQLException {
-        this.conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/controlador_financeiro", "postgres", "250682");
+        try {
+            Class.forName("org.postgresql.Driver");  // Carrega o driver JDBC explicitamente
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Driver PostgreSQL não encontrado!", e);
+        }
+        this.conn = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/controle_financeiro",
+                "postgres",
+                "250682"
+        );
     }
 
-    // Metodo getInstance, que vai ser usado na aplicação.
+    // Método getInstance, que vai ser usado na aplicação.
     public static PostgresConnector getInstance() {
         if (instance == null) {
             try {
@@ -36,9 +44,8 @@ public class PostgresConnector {
         }
     }
 
-    // retorna o preparedStatement, que é um metodo para consultas sql, evita sql injection e é mais rápido para consultas que são executadas várias vezes com parâmetros diferentes.
+    // Retorna o PreparedStatement, método para consultas SQL, evita SQL injection.
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return this.conn.prepareStatement(sql);
     }
-
 }

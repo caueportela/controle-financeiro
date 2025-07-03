@@ -16,17 +16,19 @@ public class TransacaoDAO {
         this.connector = connector;
     }
 
+    // Salvar transação usando o campo categoria diretamente (varchar)
     public void salvar(Transacao transacao) throws SQLException {
         String sql = "INSERT INTO transacao (descricao, valor, categoria, id_usuario) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connector.prepareStatement(sql)) {
             stmt.setString(1, transacao.getDescricao());
             stmt.setDouble(2, transacao.getValor());
-            stmt.setString(3, transacao.getCategoria());
+            stmt.setString(3, transacao.getCategoria());  // categoria como string
             stmt.setLong(4, transacao.getUsuarioId());
             stmt.executeUpdate();
         }
     }
 
+    // Listar transações pelo usuário, pegando categoria direto do campo varchar
     public List<Transacao> listarPorUsuario(long usuarioId) throws SQLException {
         String sql = "SELECT descricao, valor, categoria FROM transacao WHERE id_usuario = ?";
         List<Transacao> transacoes = new ArrayList<>();

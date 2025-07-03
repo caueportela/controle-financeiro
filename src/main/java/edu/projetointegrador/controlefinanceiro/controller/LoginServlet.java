@@ -2,15 +2,29 @@ package edu.projetointegrador.controlefinanceiro.controller;
 
 import edu.projetointegrador.controlefinanceiro.connector.PostgresConnector;
 import edu.projetointegrador.controlefinanceiro.dao.UsuarioDAO;
-import org.json.JSONObject;
+import edu.projetointegrador.controlefinanceiro.model.Usuario;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+
+    private static class LoginRequest {
+        private String email;
+        private String senha;
+
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getSenha() { return senha; }
+        public void setSenha(String senha) { this.senha = senha; }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.getWriter().write("Servlet está funcionando!");
@@ -18,35 +32,39 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        StringBuilder sb = new StringBuilder();
-
-        // Lê o JSON do corpo da requisição com try-with-resources para fechar o reader automaticamente
-        try (BufferedReader reader = request.getReader()) {
-            String linha;
-            while ((linha = reader.readLine()) != null) {
-                sb.append(linha);
-            }
-        }
-
-        JSONObject resposta = new JSONObject();
         response.setContentType("application/json");
+        Gson gson = new Gson();
 
-        try {
-            JSONObject json = new JSONObject(sb.toString());
-            String email = json.getString("email");
-            String senha = json.getString("senha");
+        try (BufferedReader reader = request.getReader()) {
+            LoginRequest loginRequest = gson.fromJson(reader, LoginRequest.class);
+
+            String email = loginRequest.getEmail();
+            String senha = loginRequest.getSenha();
 
             PostgresConnector connector = PostgresConnector.getInstance();
             UsuarioDAO dao = new UsuarioDAO(connector);
 
-            boolean autenticado = dao.autenticar(email, senha);
-            resposta.put("sucesso", autenticado);
+            Usuario usuario = dao.findByEmail(email);
+            boolean autenticado = usuario != null && usuario.getSenha().equals(senha);
 
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("sucesso", autenticado);
+
+            if (autenticado) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute("usuarioId", usuario.getId()); // ESSENCIAL para controlar sessão e autorizar acessos
+                session.setAttribute("usuarioLogado", email); // Opcional, para facilitar uso do email na sessão
+            }
+
+            response.getWriter().write(gson.toJson(jsonResponse));
         } catch (Exception e) {
             response.setStatus(500);
-            resposta.put("erro", "Erro interno: " + e.getMessage());
-        }
 
-        response.getWriter().write(resposta.toString());
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.addProperty("sucesso", false);
+            errorResponse.addProperty("erro", "Erro interno: " + e.getMessage());
+
+            response.getWriter().write(gson.toJson(errorResponse));
+        }
     }
 }
