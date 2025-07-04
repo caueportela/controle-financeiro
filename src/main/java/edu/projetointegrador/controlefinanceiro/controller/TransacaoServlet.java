@@ -49,6 +49,28 @@ public class TransacaoServlet extends HttpServlet {
             resp.getWriter().write(gson.toJson(Map.of("erro", "Erro ao salvar transação: " + e.getMessage())));
         }
     }
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        HttpSession session = req.getSession(false);
+
+        if (session == null || session.getAttribute("usuarioId") == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().write(gson.toJson(Map.of("erro", "Usuário não autenticado")));
+            return;
+        }
+
+        long usuarioId = (long) session.getAttribute("usuarioId");
+
+        try {
+            transacaoDAO.deletarPorUsuario(usuarioId);
+            resp.getWriter().write(gson.toJson(Map.of("mensagem", "Despesas zeradas com sucesso!")));
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write(gson.toJson(Map.of("erro", "Erro ao zerar despesas: " + e.getMessage())));
+        }
+    }
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

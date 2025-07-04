@@ -22,7 +22,7 @@ public class PostgresConnector {
         );
     }
 
-    // Método getInstance, que vai ser usado na aplicação.
+    // Metodo getInstance, que vai ser usado na aplicação.
     public static PostgresConnector getInstance() {
         if (instance == null) {
             try {

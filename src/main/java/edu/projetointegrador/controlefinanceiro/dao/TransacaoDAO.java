@@ -27,6 +27,14 @@ public class TransacaoDAO {
             stmt.executeUpdate();
         }
     }
+    public void deletarPorUsuario(long usuarioId) throws SQLException {
+        String sql = "DELETE FROM transacao WHERE id_usuario = ?";
+        try (PreparedStatement stmt = connector.prepareStatement(sql)) {
+            stmt.setLong(1, usuarioId);
+            stmt.executeUpdate();
+        }
+    }
+
 
     // Listar transações pelo usuário, pegando categoria direto do campo varchar
     public List<Transacao> listarPorUsuario(long usuarioId) throws SQLException {

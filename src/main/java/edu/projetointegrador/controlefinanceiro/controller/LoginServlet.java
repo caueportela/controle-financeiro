@@ -53,7 +53,7 @@ public class LoginServlet extends HttpServlet {
             if (autenticado) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("usuarioId", usuario.getId()); // ESSENCIAL para controlar sessão e autorizar acessos
-                session.setAttribute("usuarioLogado", email); // Opcional, para facilitar uso do email na sessão
+                session.setAttribute("usuarioLogado", email);
             }
 
             response.getWriter().write(gson.toJson(jsonResponse));
