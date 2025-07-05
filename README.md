@@ -24,12 +24,13 @@ Sistema web feito para controlar as despesas mensais de uma pessoa, desenvolvido
 
 ## 🗃️ Estrutura do Projeto
 controle-financeiro/
-├── backend/
+├── edu.projetointegrador.controlefinanceiro
 │ ├── controller/
 │ ├── dao/
 │ ├── model/
-│ └── connector/
-├── frontend/
+│ └── connector/ 
+├── webapp/
+└── frontend/
 │ ├── index.html
 │ ├── login.html
 │ ├── style.css
