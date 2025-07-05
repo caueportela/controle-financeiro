@@ -30,7 +30,6 @@ controle-financeiro/
 │ ├── model/
 │ └── connector/ 
 ├── webapp/
-└── frontend/
 │ ├── index.html
 │ ├── login.html
 │ ├── style.css
