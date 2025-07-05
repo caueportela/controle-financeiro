@@ -22,7 +22,7 @@ public class TransacaoDAO {
         try (PreparedStatement stmt = connector.prepareStatement(sql)) {
             stmt.setString(1, transacao.getDescricao());
             stmt.setDouble(2, transacao.getValor());
-            stmt.setString(3, transacao.getCategoria());  // categoria como string
+            stmt.setString(3, transacao.getCategoria());
             stmt.setLong(4, transacao.getUsuarioId());
             stmt.executeUpdate();
         }

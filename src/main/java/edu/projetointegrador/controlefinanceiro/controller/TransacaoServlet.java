@@ -86,7 +86,7 @@ public class TransacaoServlet extends HttpServlet {
         long usuarioId = ((Number) session.getAttribute("usuarioId")).longValue();
 
         try {
-            List<Transacao> transacoes = transacaoDAO.listarPorUsuario(usuarioId);
+            List<Transacao> transacoes = transacaoDAO.listarPorUsuario(usua rioId);
             String json = gson.toJson(transacoes);
             resp.getWriter().write(json);
         } catch (Exception e) {
